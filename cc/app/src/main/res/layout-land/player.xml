@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:myapp="http://schemas.android.com/apk/res-auto"
-    xmlns:ads="http://schemas.android.com/apk/lib/com.google.ads"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#000"
     android:padding="0dip" >
-
-  <com.google.ads.AdView
-        android:id="@+id/ad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        ads:adSize="SMART_BANNER"
-        ads:adUnitId="a14ca09b777254f"
-        ads:loadAdOnCreate="true"
-        ads:testDevices="68145B546719A50E3EDC15D538DDDF67" />
 
     <ImageButton
         android:id="@+id/previous"
@@ -101,7 +91,6 @@
         android:id="@+id/subscriptionName"
         android:layout_width="fill_parent"
         android:layout_height="35dip"
-        android:layout_below="@id/ad"
         android:layout_x="0dip"
         android:background="#c7cbd7"
         android:ellipsize="none"
