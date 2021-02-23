@@ -15,12 +15,12 @@ cc/local.properties
 cc/.classpath
 cc/.project
 cc/.settings
-build.gradle
-settings.gradle
 ccpro
 robotium
 otherAssets
 .metadata
+.directory
+local.properties
 cc/ant.properties
 cctest/gen
 cctest/bin

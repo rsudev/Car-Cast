@@ -313,12 +313,18 @@ public class ContentService extends Service implements MediaPlayer.OnCompletionL
         if (got == 0 && !app_preferences.getBoolean("notifiyOnZeroDownloads", true)) {
             mNotificationManager.cancel(22);
         } else {
-            Notification notification = new Notification(R.drawable.icon2, "Download complete", System.currentTimeMillis());
 
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, CarCast.class), 0);
 
-            notification.setLatestEventInfo(getBaseContext(), "Downloads Finished", "Downloaded " + got + " podcasts.", contentIntent);
-            notification.flags = Notification.FLAG_AUTO_CANCEL;
+            Notification.Builder builder = new Notification.Builder(this)
+                    .setSmallIcon(R.drawable.icon2)
+                    .setContentTitle("Downloads Finished")
+                    .setContentText("Downloaded " + got + " podcasts.")
+                    .setContentIntent(contentIntent);
+
+            Notification notification = builder.getNotification();
+
+            notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
             mNotificationManager.notify(22, notification);
         }
@@ -958,7 +964,7 @@ public class ContentService extends Service implements MediaPlayer.OnCompletionL
                     // Lets not the phone go to sleep while doing
                     // downloads....
                     PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                    PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "ContentService download thread");
+                    PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CarCast:Download");
 
                     WifiManager.WifiLock wifiLock = null;
 
@@ -968,7 +974,7 @@ public class ContentService extends Service implements MediaPlayer.OnCompletionL
                         wl.acquire();
 
                         // If we have wifi now, lets hold on to it.
-                        WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                         if (wifi.isWifiEnabled()) {
                             wifiLock = wifi.createWifiLock("CarCast");
                             if (wifiLock != null)
@@ -1051,15 +1057,19 @@ public class ContentService extends Service implements MediaPlayer.OnCompletionL
     void updateNotification(String update) {
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Activity.NOTIFICATION_SERVICE);
 
-        Notification notification = new Notification(R.drawable.iconbusy, "Downloading started", System.currentTimeMillis());
-
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, CarCast.class), 0);
 
-        notification.setLatestEventInfo(getBaseContext(), "Downloading Started", update, contentIntent);
-        notification.flags = Notification.FLAG_ONGOING_EVENT;
+        Notification.Builder builder = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.iconbusy)
+                .setContentTitle("Downloading Started")
+                .setContentText(update)
+                .setContentIntent(contentIntent);
+
+        Notification notification = builder.getNotification();
+
+        notification.flags |= Notification.FLAG_ONGOING_EVENT;
 
         mNotificationManager.notify(23, notification);
-
     }
 
     public boolean isPlaying() {
@@ -1169,9 +1179,15 @@ public class ContentService extends Service implements MediaPlayer.OnCompletionL
 
     void enableNotification() {
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, new Intent(this, CarCast.class), 0);
-        Notification notification = new Notification(R.drawable.ccp_launcher, null, System.currentTimeMillis());
+
+        Notification.Builder builder = new Notification.Builder(this)
+                .setSmallIcon(R.drawable.ccp_launcher)
+                .setContentTitle(getText(R.string.notification_status))
+                .setContentText(getText(R.string.notification_text))
+                .setContentIntent(contentIntent);
+
+        Notification notification = builder.getNotification();
         notification.flags |= Notification.FLAG_ONGOING_EVENT | Notification.FLAG_NO_CLEAR;
-        notification.setLatestEventInfo(this, getText(R.string.notification_status), getText(R.string.notification_text), contentIntent);
 
         startForegroundCompat(R.string.notification_status, notification);
 
@@ -1223,7 +1239,7 @@ public class ContentService extends Service implements MediaPlayer.OnCompletionL
                     // Lets not the phone go to sleep while doing
                     // downloads....
                     PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                    PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "ContentService download thread");
+                    PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "CarCast:Download");
 
                     WifiManager.WifiLock wifiLock = null;
 
@@ -1233,7 +1249,7 @@ public class ContentService extends Service implements MediaPlayer.OnCompletionL
                         wl.acquire();
 
                         // If we have wifi now, lets hold on to it.
-                        WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+                        WifiManager wifi = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                         if (wifi.isWifiEnabled()) {
                             wifiLock = wifi.createWifiLock("CarCast");
                             if (wifiLock != null)

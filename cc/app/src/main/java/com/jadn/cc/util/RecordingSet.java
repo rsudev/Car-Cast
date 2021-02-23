@@ -109,13 +109,15 @@ public class RecordingSet {
             mNotificationManager.cancel(24);
         } else {
 
-            Notification notification = new Notification(R.drawable.idea, "Audio Recordings ", System.currentTimeMillis());
-
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, new Intent(context, AudioRecorder.class), 0);
 
-            notification.setLatestEventInfo(context, "Audio Recordings", "You have " + r + " recording"
-                    + (r == 1 ? "." : "s."), contentIntent);
-            //notification.flags = Notification.FLAG_AUTO_CANCEL;
+            Notification.Builder builder = new Notification.Builder(context)
+                    .setSmallIcon(R.drawable.idea)
+                    .setContentTitle("Audio Recordings")
+                    .setContentText("You have " + r + " recording" + (r == 1 ? "." : "s."))
+                    .setContentIntent(contentIntent);
+
+            Notification notification = builder.getNotification();
 
             mNotificationManager.notify(24, notification);
         }
